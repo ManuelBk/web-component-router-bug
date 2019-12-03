@@ -8,10 +8,15 @@ import {Router} from '@angular/router';
 export class Overview1Component {
   title = 'Overview1';
 
+  show = false;
+
   constructor(private router: Router) {
   }
 
   navigate() {
-    this.router.navigate(['/route1/detail']);
+    this.show = false;
+    this.router.navigate(['/route1/detail']).then(() => {
+      this.show = true;
+    });
   }
 }
