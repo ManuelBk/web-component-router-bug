@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>WebComponent Bug Demo</title>
+    <meta charset="utf-8">
+    <base href="/">
+
+  </head>
+  <body>
+    <button onclick="switch1()">switch with delay (working)</button>
+    <button onclick="switch2()">switch directly (not working)</button>
+
+    <div id="container">
+      <web-component id="wc"></web-component>
+    </div>
+
+    <script>
+      var switcher = true;
+
+      /**
+       * Triggering an external navigation with delayed execution
+       */
+      switch1 = function() {
+        if (switcher) {
+          document.getElementById('container').innerHTML = '';
+          window.history.pushState({page: 1}, 'title 1', '/route1');
+          setTimeout(() => {
+            document.getElementById(
+              'container').innerHTML = '<web-component id="wc" state="/route1"></web-component>';
+            switcher = false;
+          }, 50);
+
+        } else {
+          document.getElementById('container').innerHTML = '';
+          window.history.pushState({page: 2}, 'title 2', '/route2');
+          setTimeout(() => {
+            document.getElementById(
+              'container').innerHTML = '<web-component id="wc" state="/route2"></web-component>';
+            switcher = true;
+          }, 50);
+        }
+      };
+
+      /**
+       * Triggering an external navigation without delayed execution
+       */
+      switch2 = function() {
+        if (switcher) {
+          document.getElementById('container').innerHTML = '';
+          window.history.pushState({page: 1}, 'title 1', '/route1');
+          document.getElementById(
+            'container').innerHTML = '';
+          document.getElementById(
+            'container').innerHTML = '<web-component id="wc" state="/route1"></web-component>';
+          switcher = false;
+        } else {
+          document.getElementById('container').innerHTML = '';
+          window.history.pushState({page: 2}, 'title 2', '/route2');
+          document.getElementById(
+            'container').innerHTML = '';
+          document.getElementById(
+            'container').innerHTML = '<web-component id="wc" state="/route2"></web-component>';
+          switcher = true;
+        }
+      };
+
+      /**
+       * Passing the initally called url to the WebComponent
+       */
+      if (document.getElementById('wc') !== null) {
+        document.getElementById('wc').
+          setAttribute('state', window.location.pathname + window.location.search);
+      }
+    </script>
+  </body>
+</html>
